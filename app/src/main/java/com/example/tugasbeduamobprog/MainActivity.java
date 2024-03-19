@@ -3,32 +3,47 @@ package com.example.tugasbeduamobprog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.widget.GridView;
+import android.view.MenuItem;
+
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private GridView gridView;
-    private ArrayAdapter<String> adapter;
-    private List<String> dataList = new ArrayList<>();
+    BottomNavigationView bottomNavigationView;
+
+    HomeFragment homeFragment = new HomeFragment();
+    MyFragment myFragment = new MyFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        gridView = findViewById(R.id.grid_view);
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dataList);
-        gridView.setAdapter(adapter);
+        bottomNavigationView  = findViewById(R.id.bottom_navigation);
 
-        MyFragment fragment = new MyFragment();
-        fragment.setOnDataTransferListener(this);
-        // Add your fragment to your activity
-    }
+        getSupportFragmentManager().beginTransaction().replace(R.id.container,homeFragment).commit();
 
-    @Override
-    public void onDataTransfer(String data) {
-        // Handle the data received from the fragment
-        dataList.add(data);
-        adapter.notifyDataSetChanged();
+        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.myfragment);
+        badgeDrawable.setVisible(true);
+        badgeDrawable.setNumber(8);
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.home) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, homeFragment).commit();
+                } else if (itemId == R.id.myfragment) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, myFragment).commit();
+                }
+
+                return true;
+            }
+        });
+
+
+
     }
 }
