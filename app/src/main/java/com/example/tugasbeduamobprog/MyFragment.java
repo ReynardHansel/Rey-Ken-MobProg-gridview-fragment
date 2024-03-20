@@ -1,6 +1,7 @@
 package com.example.tugasbeduamobprog;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import androidx.fragment.app.Fragment;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +24,7 @@ public class MyFragment extends Fragment {
     private GridView gridView;
     private ArrayAdapter<String> adapter;
     private OnDataTransferListener listener;
+    private List<String> dataList = new ArrayList<>();
 
     public MyFragment() {
         // Required empty public constructor
@@ -35,9 +39,7 @@ public class MyFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_my, container, false);
         gridView = rootView.findViewById(R.id.grid_view);
 
-        // Example data
-        List<String> data = Arrays.asList("Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "UwU", "OwO");
-        adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, data);
+        adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, dataList);
         gridView.setAdapter(adapter);
 
         // Set click listener to send data to activity when an item is clicked
@@ -52,10 +54,37 @@ public class MyFragment extends Fragment {
         return rootView;
     }
 
+    public void addData(String data) {
+        Log.d("MyFragment", "Adding data: " + data);
+        dataList.add(data);
+        // Check if adapter is not null before calling notifyDataSetChanged
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        } else {
+            Log.e("MyFragment", "Adapter is null. Cannot update UI.");
+        }
+        Log.d("MyFragment", "Data added. GridView updated.");
+    }
+
+    public void updateData(List<String> data) {
+        // Update your adapter with the new data
+        adapter.clear();
+        adapter.addAll(data);
+        adapter.notifyDataSetChanged();
+    }
+
     // Call this method when you want to transfer data
-    private void transferData(String data) {
-        if (listener != null) {
-            listener.onDataTransfer(data);
+    public void transferData(String data) {
+        // if (listener != null) {
+        //     listener.onDataTransfer(data);
+        // }
+
+        dataList.add(data);
+        // Check if adapter is not null before calling notifyDataSetChanged
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        } else {
+            Log.e("MyFragment", "Adapter is null. Cannot update UI.");
         }
     }
 
